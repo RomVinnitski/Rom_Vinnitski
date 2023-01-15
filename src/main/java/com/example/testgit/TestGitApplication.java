@@ -14,7 +14,6 @@ public class TestGitApplication {
         System.out.println("Hello World!");
         System.out.println("My name is Rom Netanel Vinnitski.");
         System.out.println("my partner is Ariel Dobkin");
-        System.out.println("and i have another partner whom name is Nehorai.")
     }
 
 }
