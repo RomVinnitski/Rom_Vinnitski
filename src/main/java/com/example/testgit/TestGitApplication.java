@@ -2,6 +2,9 @@ package com.example.testgit;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import testgit.ConnectionUtil;
+
+import java.sql.Connection;
 
 /**
  * the class prints hello world.
@@ -11,9 +14,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class TestGitApplication {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
-        System.out.println("My name is Rom Netanel Vinnitski.");
-        System.out.println("my partner is Ariel Dobkin");
+        ConnectionUtil myCon = new ConnectionUtil();
+        Connection con = myCon.connect_to_db("LearnGit", "postgres", "romnetanel11");
+        myCon.insert(con,"Amit");
     }
 
 }
