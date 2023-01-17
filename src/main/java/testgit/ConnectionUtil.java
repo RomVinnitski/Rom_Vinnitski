@@ -1,5 +1,6 @@
 package testgit;
 
+import javax.naming.Name;
 import java.sql.*;
 
 
@@ -95,5 +96,34 @@ public class ConnectionUtil {
         } catch (Exception e) {
             System.out.println(e);
         }
+    }
+    public void select(Connection conn){
+        Statement statement;
+        try {
+            statement = conn.createStatement();
+            String query = "SELECT * FROM users";
+            statement.execute(query);
+            System.out.println("Work!");
+            conn.close();
+        } catch (SQLException e) {
+            System.out.println("Error");
+            throw new RuntimeException(e);
+        }
+
+    }
+    public void update(Connection conn, String Name, int id){
+        Statement statement;
+        try {
+            String query = String.format("UPDATE users SET user_name = '%s' WHERE id = %s", Name, Integer.toString(id));
+            statement = conn.createStatement();
+            statement.executeUpdate(query);
+            System.out.println("Work!");
+            conn.close();
+        } catch (SQLException e) {
+            System.out.println("Error");
+            throw new RuntimeException(e);
+        }
+
+
     }
 }
