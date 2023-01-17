@@ -24,6 +24,7 @@ public class ConnectionUtil {
         return conn;
     }
 
+    /*
     public void createTable(Connection conn, String recovery) {
 
         Statement statement;
@@ -38,7 +39,6 @@ public class ConnectionUtil {
             System.out.println("please enter your social security number **1 to exit program**");
         }
     }
-
     public void insert_row(Connection conn, int socials, double transfer) {
         Statement statement;
         try {
@@ -50,7 +50,7 @@ public class ConnectionUtil {
         } catch (Exception e) {
             System.out.println(e);
         }
-    }
+    }*/
 
     public void balance(Connection conn, String recovery) throws SQLException {
         Statement statement;
@@ -72,7 +72,7 @@ public class ConnectionUtil {
             System.out.println(e);
         }
     }
-/*    public void delete(Connection conn, int idm) {
+    /*    public void delete(Connection conn, int idm) {
         Statement statement;
         try {
             String query = "DELETE FROM RECOVERY WHERE id="+idm+";";
@@ -89,7 +89,7 @@ public class ConnectionUtil {
         Statement statement;
         try {
             String query = String.format("INSERT INTO public.users(\n" +
-                    "\t\"userName\")\n" +
+                    "\t\"user_name\")\n" +
                     "\tVALUES ('%s');", userName);
             statement = conn.createStatement();
             statement.executeUpdate(query);
@@ -112,11 +112,18 @@ public class ConnectionUtil {
 
     }
     public void update(Connection conn, String Name, int id){
-        Statement statement;
         try {
-            String query = String.format("UPDATE users SET user_name = '%s' WHERE id = %s", Name, Integer.toString(id));
-            statement = conn.createStatement();
-            statement.executeUpdate(query);
+            //String query = String.format("UPDATE users SET user_name = '%s' WHERE id = %s", Name, Integer.toString(id));
+            String sqlUpdate = "UPDATE users\n" +
+                    "\tSET  user_name = ?" +
+                    "\tWHERE id = ?;";
+            PreparedStatement statement =conn.prepareStatement(sqlUpdate);
+            statement.setString(1,Name);
+            statement.setInt(2,id);
+            statement.executeUpdate();
+            conn.close();
+            //statement = conn.createStatement();
+            //statement.executeUpdate(sqlUpdate);
             System.out.println("Work!");
             conn.close();
         } catch (SQLException e) {

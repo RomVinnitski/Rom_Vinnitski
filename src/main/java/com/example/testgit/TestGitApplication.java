@@ -15,11 +15,11 @@ public class TestGitApplication {
 
     public static void main(String[] args) {
         ConnectionUtil myCon = new ConnectionUtil();
-        //Connection con = myCon.connect_to_db("LearnGit", "postgres", "romnetanel11");
-        //myCon.insert(con,"Amit");
-        //myCon.select(con);
+        Connection con = myCon.connect_to_db("LearnGit", "postgres", "romnetanel11");
+        myCon.insert(con,"Arie");
+        myCon.select(con);
         Connection con1 = myCon.connect_to_db("LearnGit", "postgres", "romnetanel11");
-        myCon.update(con1, "Arie", 4);
+        myCon.update(con1, "Ariel", 4);
 
     }
 
