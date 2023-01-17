@@ -14,12 +14,14 @@ import java.sql.Connection;
 public class TestGitApplication {
 
     public static void main(String[] args) {
+        /*
         ConnectionUtil myCon = new ConnectionUtil();
         Connection con = myCon.connect_to_db("LearnGit", "postgres", "romnetanel11");
         myCon.insert(con,"Arie");
         myCon.select(con);
         Connection con1 = myCon.connect_to_db("LearnGit", "postgres", "romnetanel11");
         myCon.update(con1, "Ariel", 4);
+        */
 
     }
 
