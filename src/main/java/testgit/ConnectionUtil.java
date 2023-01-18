@@ -97,13 +97,17 @@ public class ConnectionUtil {
             System.out.println(e);
         }
     }
-    public void select(Connection conn){
+    public void select(Connection conn) throws SQLException{
         Statement statement;
         try {
             statement = conn.createStatement();
-            String query = "SELECT * FROM users";
-            statement.execute(query);
-            System.out.println("Work!");
+            String query = "SELECT * FROM users ORDER BY id";
+            ResultSet res = statement.executeQuery(query);
+            while(res.next()){
+                String user_name = res.getString("user_name");
+                int ID = res.getInt("id");
+                System.out.println(user_name + ", " + ID);
+            }
             conn.close();
         } catch (SQLException e) {
             System.out.println("Error");
@@ -113,17 +117,16 @@ public class ConnectionUtil {
     }
     public void update(Connection conn, String Name, int id){
         try {
-            //String query = String.format("UPDATE users SET user_name = '%s' WHERE id = %s", Name, Integer.toString(id));
+            //String query = String.format("UPDATE users SET user_name = '%s'
+            // WHERE id = %s", Name, Integer.toString(id));
             String sqlUpdate = "UPDATE users\n" +
                     "\tSET  user_name = ?" +
                     "\tWHERE id = ?;";
-            PreparedStatement statement =conn.prepareStatement(sqlUpdate);
+            PreparedStatement statement = conn.prepareStatement(sqlUpdate);
             statement.setString(1,Name);
             statement.setInt(2,id);
             statement.executeUpdate();
-            conn.close();
             //statement = conn.createStatement();
-            //statement.executeUpdate(sqlUpdate);
             System.out.println("Work!");
             conn.close();
         } catch (SQLException e) {
