@@ -1,7 +1,10 @@
-package testgit;
+package com.example.testgit;
+
+import org.yaml.snakeyaml.events.Event;
 
 import javax.naming.Name;
 import java.sql.*;
+import java.util.ArrayList;
 
 
 public class ConnectionUtil {
@@ -88,7 +91,7 @@ public class ConnectionUtil {
     public void insert(Connection conn, String userName){
         Statement statement;
         try {
-            String query = String.format("INSERT INTO public.users(\n" +
+            String query = String.format("INSERT INTO public.com.example.testgit.users(\n" +
                     "\t\"user_name\")\n" +
                     "\tVALUES ('%s');", userName);
             statement = conn.createStatement();
@@ -97,7 +100,7 @@ public class ConnectionUtil {
             System.out.println(e);
         }
     }
-    public void select(Connection conn) throws SQLException{
+    public void select(Connection conn, ArrayList<users> data) throws SQLException{
         Statement statement;
         try {
             statement = conn.createStatement();
@@ -105,8 +108,12 @@ public class ConnectionUtil {
             ResultSet res = statement.executeQuery(query);
             while(res.next()){
                 String user_name = res.getString("user_name");
+                String phone_number = res.getString("phone_number");
+                String email = res.getString("Email");
+                String last_name = res.getString("last_name");
                 int ID = res.getInt("id");
                 System.out.println(user_name + ", " + ID);
+                //data.add(new users(ID, user_name, phone_number, email, last_name));
             }
             conn.close();
         } catch (SQLException e) {
@@ -115,9 +122,42 @@ public class ConnectionUtil {
         }
 
     }
-    public void update(Connection conn, String Name, int id){
+    public boolean in_array_list(int ID, ArrayList<users> data){
+        for (int i = 0; i < data.size(); i++) {
+            if (ID == data.get(i).getID()){
+                return true;
+            }
+        }
+        return false;
+    }
+    public void db_data_to_list(Connection conn, ArrayList<users> data) throws SQLException{
+        Statement statement;
         try {
-            //String query = String.format("UPDATE users SET user_name = '%s'
+            statement = conn.createStatement();
+            String query = "SELECT * FROM users ORDER BY id";
+            ResultSet res = statement.executeQuery(query);
+            while(res.next()){
+                String user_name = res.getString("user_name");
+                String phone_number = res.getString("phone_number");
+                String email = res.getString("Email");
+                String last_name = res.getString("last_name");
+                int ID = res.getInt("id");
+                //System.out.println(user_name + ", " + ID);
+                data.add(new users(ID, user_name, phone_number, email, last_name));
+                if (!(in_array_list(ID, data))){
+                    data.add(new users(ID, user_name, phone_number, email, last_name));
+                }
+            }
+            conn.close();
+        } catch (SQLException e) {
+            System.out.println("Error");
+            throw new RuntimeException(e);
+        }
+
+    }
+    public void update(Connection conn, String Name, int id, ArrayList<users> data){
+        try {
+            //String query = String.format("UPDATE com.example.testgit.users SET user_name = '%s'
             // WHERE id = %s", Name, Integer.toString(id));
             String sqlUpdate = "UPDATE users\n" +
                     "\tSET  user_name = ?" +
@@ -128,12 +168,11 @@ public class ConnectionUtil {
             statement.executeUpdate();
             //statement = conn.createStatement();
             System.out.println("Work!");
+            data.get(ID);
             conn.close();
         } catch (SQLException e) {
             System.out.println("Error");
             throw new RuntimeException(e);
         }
-
-
     }
 }
