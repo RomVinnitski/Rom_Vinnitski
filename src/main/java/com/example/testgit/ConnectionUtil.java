@@ -9,22 +9,58 @@ import java.util.ArrayList;
 
 public class ConnectionUtil {
 
-    public Connection connect_to_db(String dbname, String user, String pass) {
+    public Connection connect_to_db() {
 
         Connection conn = null;
         try {
             Class.forName("org.postgresql.Driver");
-            conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/" + dbname, user, pass);
-            if (conn != null) {
-                System.out.println("Connection Established");
-            } else {
-                System.out.println("Connection Failed");
-            }
+            conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/LearnGit", "postgres", "romnetanel11");
+            System.out.println("Connection Established");
 
         } catch (Exception e) {
+            System.out.println("failed");
             System.out.println(e);
         }
         return conn;
+    }
+    public void db_data_to_list(ArrayList<users> data) throws SQLException{
+        Statement statement;
+        Connection connection=connect_to_db();
+        try {
+            statement = connection.createStatement();
+            String query = "SELECT * FROM users ORDER BY id";
+            ResultSet res = statement.executeQuery(query);
+            int i = 0;
+            while(res.next()){
+                String user_name = res.getString("user_name");
+                String phone_number = res.getString("phone_number");
+                String email = res.getString("Email");
+                String last_name = res.getString("last_name");
+                int ID = res.getInt("id");
+                //System.out.println(user_name + ", " + ID);
+                data.add(new users(ID, user_name, phone_number, email, last_name));
+                if (!(in_array_list(ID, data))){
+                    data.add(new users(ID, user_name, phone_number, email, last_name));
+                }
+                if ((i<data.size())&&((data.get(i).getID())==0)){
+                    data.get(i).setID(ID);;
+                }
+                if ((i<data.size())&&data.get(i).getUser_name()!=user_name){
+                    data.get(i).setUser_name(user_name);
+                }
+                i++;
+            }
+            connection.close();
+        } catch (SQLException e) {
+            System.out.println("Error");
+            throw new RuntimeException(e);
+        }
+        for (int i = 0; i < data.size(); i++) {
+            if ((data.get(i).getID())==0){
+                insert((data.get(i).getUser_name()),data);
+            }
+        }
+
     }
 
     /*
@@ -55,10 +91,11 @@ public class ConnectionUtil {
         }
     }*/
 
-    public void balance(Connection conn, String recovery) throws SQLException {
+/*    public void balance(String recovery) throws SQLException {
         Statement statement;
         try {
             String query = "SELECT * FROM " + recovery + ";";
+            Connection conn=connect_to_db();
             statement = conn.createStatement();
 
             ResultSet result = statement.executeQuery(query);
@@ -75,6 +112,7 @@ public class ConnectionUtil {
             System.out.println(e);
         }
     }
+    */
     /*    public void delete(Connection conn, int idm) {
         Statement statement;
         try {
@@ -88,14 +126,19 @@ public class ConnectionUtil {
 
     }
     */
-    public void insert(Connection conn, String userName){
+    public void insert(String userName, ArrayList<users> data){
         Statement statement;
         try {
-            String query = String.format("INSERT INTO public.com.example.testgit.users(\n" +
+            String query = String.format("INSERT INTO users(\n" +
                     "\t\"user_name\")\n" +
                     "\tVALUES ('%s');", userName);
+            Connection conn=connect_to_db();
             statement = conn.createStatement();
             statement.executeUpdate(query);
+
+            System.out.println("rom");
+            //db_data_to_list(data);
+            conn.close();
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -114,6 +157,7 @@ public class ConnectionUtil {
                 int ID = res.getInt("id");
                 System.out.println(user_name + ", " + ID);
                 //data.add(new users(ID, user_name, phone_number, email, last_name));
+                db_data_to_list(data);
             }
             conn.close();
         } catch (SQLException e) {
@@ -130,31 +174,7 @@ public class ConnectionUtil {
         }
         return false;
     }
-    public void db_data_to_list(Connection conn, ArrayList<users> data) throws SQLException{
-        Statement statement;
-        try {
-            statement = conn.createStatement();
-            String query = "SELECT * FROM users ORDER BY id";
-            ResultSet res = statement.executeQuery(query);
-            while(res.next()){
-                String user_name = res.getString("user_name");
-                String phone_number = res.getString("phone_number");
-                String email = res.getString("Email");
-                String last_name = res.getString("last_name");
-                int ID = res.getInt("id");
-                //System.out.println(user_name + ", " + ID);
-                data.add(new users(ID, user_name, phone_number, email, last_name));
-                if (!(in_array_list(ID, data))){
-                    data.add(new users(ID, user_name, phone_number, email, last_name));
-                }
-            }
-            conn.close();
-        } catch (SQLException e) {
-            System.out.println("Error");
-            throw new RuntimeException(e);
-        }
 
-    }
     public void update(Connection conn, String Name, int id, ArrayList<users> data){
         try {
             //String query = String.format("UPDATE com.example.testgit.users SET user_name = '%s'
@@ -168,7 +188,7 @@ public class ConnectionUtil {
             statement.executeUpdate();
             //statement = conn.createStatement();
             System.out.println("Work!");
-            data.get(ID);
+            //db_data_to_list(conn, data);
             conn.close();
         } catch (SQLException e) {
             System.out.println("Error");
